@@ -1,74 +1,42 @@
 #include <string>
-#include <cstring>
+#include <iterator>
 #include <iostream>
 #include <map>
-#include <vector>
-#include <cstdlib>
-#include <ctime>
 #include <fstream>
+#include <cstring>
 
-struct Lexer {
-    std::string::size_type begin = 0;
-    std::string::size_type end = 0;
+#include "token.h"
 
-    const std::string& input;
+void count(std::ifstream &ifs)
+{
+    std::map<std::string, int> word_counts;
 
-    Lexer(const std::string& input): input(input) {}
+    Token token;
+    token.reserve(50);
+    while (ifs >> token)
+        ++word_counts[token];
 
-    operator bool() { return begin < input.size(); }
+    for (const auto& word_count : word_counts)
+        std::cout << word_count.first << ": " << word_count.second << '\n';
 
-    void ignore (char c) {
-        while (*this && input[begin] == c)
-            ++begin;
-        end = begin + 1;
-    }
-
-    Lexer& next_item() {
-        begin = end;
-        end = begin + 1;
-        if (!*this)
-            return *this;
-        ignore(' ');
-        if (!*this)
-            return *this;
-        switch (input[begin]) {
-            case ',':
-            case '.':
-                return *this;
-        }
-        end = input.find_first_of("., ", begin);
-        end = (end == std::string::npos) ? input.size() : end;
-        return *this;
-    }
-
-    std::string item() {
-        return input.substr(begin, end-begin);
-    }
-};
+    std::cout << std::flush;
+}
 
 int main(int argc, char* argv[])
 {
-    if (argc != 2)
+    if (argc != 2) {
         std::cerr << argv[0] << " filename" << std::endl;
+        return 1;
+    }
 
-    std::ifstream f(argv[1]);
-    if (!f)
+    std::ifstream ifs(argv[1]);
+    if (!ifs) {
         std::cerr << "Couldn't open '" << argv[1] << "' for reading : "
                   << std::strerror(errno) << std::endl;
-
-    std::string text((std::istreambuf_iterator<char>(f)),
-                     std::istreambuf_iterator<char>());
-    Lexer lexer{text};
-
-    std::map<std::string, int> word_counts;
-    while (lexer.next_item()) {
-        ++word_counts[lexer.item()];
+        return 1;
     }
 
-    for (const auto& word_count : word_counts) {
-        std::cout << word_count.first << ": " << word_count.second << '\n';
-    }
-    std::cout << std::flush;
+    count(ifs);
 
     return 0;
 }
