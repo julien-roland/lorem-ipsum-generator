@@ -1,7 +1,13 @@
 #include <string>
 #include <iterator>
+#include <functional>
 
 struct Token : public std::string {};
+
+namespace std
+{
+    template<> struct hash<Token> : hash<string> {};
+}
 
 inline std::istream& operator>>(std::istream& is, Token& token)
 {

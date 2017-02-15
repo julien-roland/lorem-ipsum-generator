@@ -1,7 +1,7 @@
 #include <string>
 #include <iterator>
 #include <iostream>
-#include <map>
+#include <unordered_map>
 #include <fstream>
 #include <cstring>
 
@@ -9,7 +9,7 @@
 
 void count(std::ifstream &ifs)
 {
-    std::map<std::string, int> word_counts;
+    std::unordered_map<std::string, int> word_counts;
 
     Token token;
     token.reserve(50);
