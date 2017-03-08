@@ -19,7 +19,7 @@ const std::string text = "Lorem ipsum dolor sit amet, consectetur adipiscing eli
 int main(int argc, char *argv[])
 {
     if (argc != 2) {
-        std::cerr << "usage: " << argv[0] << " number" << std::endl;
+        std::cerr << "usage: " << argv[0] << " n" << std::endl;
         std::exit(1);
     }
 
