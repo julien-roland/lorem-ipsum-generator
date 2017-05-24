@@ -1,6 +1,7 @@
 #include <string>
 #include <iterator>
 #include <functional>
+#include <cctype>
 
 struct Token : public std::string {};
 
